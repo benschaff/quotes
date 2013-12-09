@@ -1,0 +1,28 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET           /                                             controllers.Application.index(mail: Option[String] ?= None)
+GET           /services/authenticate/:mail/:password        controllers.Application.authenticate(mail: String, password: String)
+DELETE        /services/authenticate                        controllers.Application.signOff
+GET           /services/signup/:mail/:password              controllers.Application.signUp(mail: String, password: String)
+GET           /services/quotes/sourcing                     controllers.StockController.quoteSource()
+GET           /services/quotes/:symbols                     controllers.StockController.quotes(symbols: String)
+GET           /services/login                               controllers.Application.openIdLogin(openid: String)
+# Ignore unrechable code warning - tiket opened
+POST          /services/login                               controllers.Application.openIdLogin(openid: String)
+GET           /services/login/openid/validate               controllers.Application.openIdValidation
+GET           /services/symbols/follow/:symbol              controllers.StockController.follow(symbol: String)
+DELETE        /services/symbols/follow/:symbol              controllers.StockController.cancel(symbol: String)
+GET           /services/symbols/:query                      controllers.StockController.symbols(query: String)
+GET           /services/charting/last30days/:symbol         controllers.StockController.last30Days(symbol: String)
+GET           /demo                                         controllers.StockController.demo
+
+# Map static resources from the /public folder to the /assets URL path
+GET           /assets/*file                                 controllers.Assets.at(path="/public", file)
+GET           /webjars/*file                                controllers.WebJarAssets.at(file)
+GET           /require.js                                   controllers.WebJarAssets.requirejs
+GET           /javascriptRoutes                             controllers.Application.javascriptRoutes
+GET           /stockJavascriptRoutes                        controllers.StockController.javascriptRoutes
+

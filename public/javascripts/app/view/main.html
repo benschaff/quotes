@@ -1,0 +1,31 @@
+<div class="jumbotron">
+    <h1>Welcome to LiveQuotes</h1>
+    <p>
+        Never miss a stock update!<br/>
+        With live refresh of your favorite symbols, LiveQuotes is the all in one place to be kept updated.
+    </p>
+    <small>
+        <strong class="text-primary">Try it out!</strong>&nbsp;Use <strong class="text-primary">mail: demo@livequotes.com</strong> and <strong class="text-primary">password: demo</strong> to sign in demo account.
+    </small>
+</div>
+<div class="row">
+    <div class="col-xs-6">
+        <div class="panel panel-primary" data-ng-show="demo.symbols">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Symbols</div>
+            <!-- List group -->
+            <ul class="list-group">
+                <li class="list-group-item" data-ng-repeat="symbol in demo.symbols">
+                    <a href="javascript:;" data-ng-click="changeSymbol(symbol)">{{symbol.name}}&nbsp;[{{symbol.symbol}}]</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="panel panel-primary" data-ng-show="currentSymbol">
+            <div class="panel-body" data-ng-if="currentSymbolChartData">
+                <chart value="currentSymbolChartData" type="line" height="400"></chart>
+            </div>
+        </div>
+    </div>
+</div>

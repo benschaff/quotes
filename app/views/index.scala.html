@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href='@routes.Assets.at("images/favicon.png")'>
+
+        <title>RealTime personalized stock stream</title>
+
+        <link rel='stylesheet' href='/webjars/@WebJarAssets.locate("css/bootstrap.min.css")'>
+        <link rel='stylesheet' href='@routes.Assets.at("stylesheets/main.css")'>
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <div class="navbar navbar-default navbar-static-top" data-role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#/">LiveQuotes</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li data-ng-class="{ active: action == 'home' || !action }"><a href="#/">Home</a></li>
+                        <li data-ng-class="{ active: action == 'symbols' }"><a href="#/symbols">Symbols</a></li>
+                        <li class="hidden" data-ng-class="{ active: action == 'portfolio', hidden: !user }" data-ng-show="user"><a href="#/portfolio">Portfolio</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" data-ng-if="!user">
+                        <li>
+                            <form class="navbar-form" data-role="sign in">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Mail" data-ng-model="shared.mail">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" placeholder="Password" data-ng-model="shared.password">
+                                </div>
+                                <button type="submit" class="btn btn-primary" data-ng-click="shared.authenticate()">Sign in</button>
+                            </form>
+                        </li>
+                        <li><button type="button" class="btn btn-warning navbar-btn" data-ng-click="shared.navigate('signup')">Sign up</button></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right hidden" data-ng-class="{ nav: true, 'navbar-nav': true, 'navbar-right': true, hidden: !user }" data-ng-show="user">
+                        <li>
+                            <a href="#/portfolio">{{user.mail}}</a>
+                        </li>
+                        <li><button type="button" class="btn btn-danger navbar-btn" data-ng-click="shared.signOff()">Sign off</button></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+
+        <div class="row hidden" data-ng-class="{ row: true, hidden: !messages.length }" data-ng-show="messages.length">
+            <div data-ng-class="{ alert: true, 'alert-danger': message.type == 'error', 'alert-success': message.type == 'success', 'alert-dismissable': true, 'col-md-6': true, 'col-md-offset-3': true }" data-ng-repeat="message in messages">
+                <button type="button" class="close" data-dismiss="alert" data-aria-hidden="true" data-ng-click="dismissMessage">&times;</button>
+                {{message.text}}
+            </div>
+        </div>
+
+        <div class="container" data-ng-view data-ng-animate="{enter: 'view-enter', leave: 'view-leave'}"></div>
+
+        <script data-main='@routes.Assets.at("javascripts/app/app.js")' type='text/javascript' src='require.js'></script>
+        <script type='text/javascript' src='@routes.Application.javascriptRoutes'></script>
+        <script type='text/javascript' src='@routes.StockController.javascriptRoutes'></script>
+    </body>
+</html>

@@ -1,0 +1,53 @@
+<div class="page-header">
+    <h1>
+        Portfolio
+    </h1>
+</div>
+<form class="form-inline" data-role="form" style="margin-bottom: 15px;">
+    <div class="form-group">
+        <input type="text" class="form-control" id="newSymbol" placeholder="Symbol" data-ng-model="newSymbol" data-ng-disabled="user.readOnly">
+    </div>
+    <button type="button" class="btn btn-primary" data-ng-click="register()" data-ng-disabled="user.readOnly">Add</button>
+</form>
+<div class="row" data-ng-if="quotes && quotes.length">
+    <div class="col-xs-6">
+        <div class="panel panel-primary">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Stocks (Last minute) - Last update: {{lastUpdate | date:'HH:mm:ss'}}</div>
+            <table class="table table-striped table-clickable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Symbol</th>
+                        <th style="text-align: center">Price ($)</th>
+                        <th style="text-align: center">Variation (%)</th>
+                        <th style="text-align: right" data-ng-if="!user.readOnly">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="quote in quotes"
+                        data-ng-class="{ danger: quote.delta < 0, success: quote.delta > 0 }"
+                        data-ng-click="changeSymbol(quote.symbol)">
+
+                        <td>{{quote.name}}</td>
+                        <td>{{quote.symbol}}</td>
+                        <td style="text-align: center">{{quote.price | currency:''}}</td>
+                        <td style="text-align: center">{{quote.delta | number:2}}</td>
+                        <td data-ng-if="!user.readOnly">
+                            <button class="btn btn-danger" data-ng-click="unregister($event, quote.symbol)">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="panel panel-primary" data-ng-show="symbol">
+            <div class="panel-body" data-ng-if="symbolChartData">
+                <chart value="symbolChartData" type="line" height="400"></chart>
+            </div>
+        </div>
+    </div>
+</div>

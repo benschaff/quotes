@@ -1,0 +1,33 @@
+<div class="page-header">
+    <h1>
+        Symbol Finder
+    </h1>
+</div>
+<form class="form-horizontal" data-role="form" style="margin-bottom: 100px;">
+    <div class="form-group">
+        <div class="col-xs-10">
+            <input type="text" class="form-control input-lg" id="lookupQuery" data-ng-model="query" placeholder="Partial company name, symbol, ...">
+        </div>
+        <div class="col-xs-2">
+            <button type="submit" class="form-control input-lg btn btn-primary" id="submit" data-ng-click="search(query)">Search</button>
+        </div>
+    </div>
+</form>
+<div data-ng-show="symbols.length >= 1">
+    <div class="col-xs-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Company name</th>
+                    <th>Symbol</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="symbol in symbols">
+                    <td>{{symbol.name}}</td>
+                    <td>{{symbol.symbol}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
