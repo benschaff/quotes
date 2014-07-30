@@ -1,6 +1,6 @@
-define(function() {
-	
-	PortfolioController = function($rootScope, $scope, $filter, quotes, Last30DaysService, FollowSymbolService, EventSourceService) {
+define(['angular'], function(angular) {
+
+    angular.module('app.controllers').controller('PortfolioController', [ '$rootScope', '$scope', '$filter', 'quotes', 'Last30DaysService', 'FollowSymbolService', 'EventSourceService', function($rootScope, $scope, $filter, quotes, Last30DaysService, FollowSymbolService, EventSourceService) {
         $rootScope.action = 'portfolio';
 
         $scope.changeSymbol = function(symbol) {
@@ -159,32 +159,5 @@ define(function() {
                 $scope.$apply();
             }
         );
-	};
-
-    PortfolioController.resolve = {
-        quotes: function(QuotesService, $q, $rootScope) {
-            if (!$rootScope.user || !$rootScope.user.followedStocks.length) return null;
-
-            var deferred = $q.defer();
-
-            var symbolList = $rootScope.user.followedStocks.join(",");
-            QuotesService.query(
-                { symbols: symbolList },
-                function(quotes) {
-                    deferred.resolve(quotes);
-                }, function(error) {
-                    console.log(error);
-
-                    $rootScope.setMessage({ type: 'error', text: 'An error occured. Please try again later' });
-
-                    deferred.resolve({});
-                }
-            );
-
-            return deferred.promise;
-        }
-    };
-	
-	return PortfolioController;
-
+    }]);
 });

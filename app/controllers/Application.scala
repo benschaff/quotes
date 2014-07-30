@@ -45,8 +45,8 @@ object Application extends Controller with MongoController {
     }
   }
 
-  def authenticate(request: Request[AnyContent], mail: String, password: String, sso: Boolean, redirect: Option[SimpleResult] = None)
-                  (notFound: => SimpleResult): Future[SimpleResult] = {
+  def authenticate(request: Request[AnyContent], mail: String, password: String, sso: Boolean, redirect: Option[Result] = None)
+                  (notFound: => Result): Future[Result] = {
 
     def findUser = {
       users.find(Json.obj("mail" -> mail)).one[User] map {

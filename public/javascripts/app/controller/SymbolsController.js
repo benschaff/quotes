@@ -1,6 +1,6 @@
-define(function() {
-	
-	SymbolsController = function($rootScope, $scope, SymbolsService) {
+define(['angular'], function(angular) {
+
+    angular.module('app.controllers').controller('SymbolsController', [ '$rootScope', '$scope', 'SymbolsService', function($rootScope, $scope, SymbolsService) {
         $rootScope.action = 'symbols';
 
         $scope.symbols = [];
@@ -30,8 +30,6 @@ define(function() {
                 }
             );
         };
-	};
-	
-	return SymbolsController;
+    }]);
 
 });

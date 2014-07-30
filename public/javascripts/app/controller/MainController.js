@@ -1,6 +1,6 @@
-define(function() {
-	
-	MainController = function($rootScope, $scope, $filter, $routeParams, demo, Last30DaysService) {
+define(['angular'], function(angular) {
+
+    angular.module('app.controllers').controller('MainController', [ '$rootScope', '$scope', '$filter', '$routeParams', 'demo', 'Last30DaysService', function($rootScope, $scope, $filter, $routeParams, demo, Last30DaysService) {
         $rootScope.action = 'home';
 
         if ($routeParams.mail) {
@@ -56,26 +56,6 @@ define(function() {
 
         if (demo.symbols) $scope.changeSymbol(demo.symbols[0]);
         $scope.demo = demo;
-	};
-
-    MainController.resolve = {
-        demo: function(DemoService, $q, $rootScope) {
-            var deferred = $q.defer();
-
-            DemoService.get(function(demo) {
-                deferred.resolve(demo);
-            }, function(error) {
-                console.log(error);
-
-                $rootScope.setMessage({ type: 'error', text: 'An error occured. Please try again later' });
-
-                deferred.resolve({});
-            });
-
-            return deferred.promise;
-        }
-    };
-	
-	return MainController;
+    }]);
 
 });

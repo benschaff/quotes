@@ -1,7 +1,6 @@
-define(function() {
-	
-	SignUpController = function($rootScope, $scope, $location, $routeParams, SignUpService) {
+define(['angular'], function(angular) {
 
+    angular.module('app.controllers').controller('SignUpController', [ '$rootScope', '$scope', '$location', '$routeParams', 'SignUpService', function($rootScope, $scope, $location, $routeParams, SignUpService) {
         $scope.mail = $routeParams.mail;
         $scope.password = null;
 
@@ -30,8 +29,6 @@ define(function() {
 
             return false;
         };
-	};
-	
-	return SignUpController;
+    }]);
 
 });

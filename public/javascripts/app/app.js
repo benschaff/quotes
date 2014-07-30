@@ -1,21 +1,46 @@
-define('angular', [ 'webjars!angular.js', 'webjars!angular-resource.js' ], function() {
-    return angular;
+var webjars = {
+    versions: {
+        'requirejs': '2.1.10',
+        'jquery': '2.1.0',
+        'angularjs': '1.2.19',
+        'bootstrap': '3.2.0',
+        'highcharts': '4.0.1',
+        'cryptojs': '3.1.2'
+    },
+    path: function(webjarid, path) {
+        return '/webjars/' + webjarid + '/' + webjars.versions[webjarid] + '/' + path;
+    }
+};
+
+define('webjars', function () {
+    return { load: function (name, req, onload, config) { onload(); } }
 });
 
 requirejs.config({
 	paths: {
+        'jquery': webjars.path("jquery", "jquery"),
+        'angular': webjars.path("angularjs", "angular"),
+        'angular-route': webjars.path("angularjs", "angular-route"),
+        'angular-animate': webjars.path("angularjs", "angular-animate"),
+        'angular-resource': webjars.path("angularjs", "angular-resource"),
+        'bootstrap': webjars.path("bootstrap", "js/bootstrap"),
+        'highcharts': webjars.path("highcharts", "highcharts"),
+        'cryptojs-core': webjars.path("cryptojs", "components/core"),
+        'cryptojs-md5': webjars.path("cryptojs", "components/md5"),
         'event-source': '../vendors/event-source/jquery.eventsource'
     },
 	shim : {
-		bootstrap : [ 'webjars!jquery.js' ],
-        'angular-route': [ 'angular' ],
-        'angular-animate': [ 'angular' ],
-        angular: [ 'webjars!highcharts.js', 'webjars!md5.js' ],
-        highcharts: [ 'webjars!jquery.js' ],
-        md5: [ 'webjars!core.js' ],
-        'event-source': [ 'webjars!jquery.js' ]
-	},
-    priority: [ 'webjars!jquery.js', 'webjars!highcharts.js', 'webjars!core.js', 'webjars!md5.js', 'angular' ]
+        'jquery': { "exports": "$" },
+        'angular': { deps: [ 'jquery' ], "exports": "angular" },
+        'angular-route': { deps: [ 'angular' ] },
+        'angular-animate': { deps: [ 'angular' ] },
+        'angular-resource': { deps: [ 'angular' ] },
+        'bootstrap': { deps: [ 'jquery' ], "exports": "bootstrap" },
+        'highcharts': { deps: [ 'jquery' ] },
+        'cryptojs-core': { "exports": "core" },
+        'cryptojs-md5': { deps: [ 'cryptojs-core' ], "exports": "md5" },
+        'event-source': [ 'jquery' ]
+	}
 });
 
 function installFunctions($rootScope, $location, LoginService) {
@@ -76,9 +101,22 @@ function installFunctions($rootScope, $location, LoginService) {
 
 }
 
+require(['angular'], function(angular) {
+    angular.module('app.controllers', []);
+});
+
 require(
     [
         'angular',
+        'angular-route',
+        'angular-animate',
+        'angular-resource',
+        'jquery',
+        'bootstrap',
+        'highcharts',
+        'cryptojs-core',
+        'cryptojs-md5',
+        'event-source',
         './controller/MainController',
         './controller/SymbolsController',
         './controller/PortfolioController',
@@ -89,39 +127,102 @@ require(
         './service/LoginService',
         './service/QuotesService',
         './service/SignUpService',
-        './service/EventSourceService',
-        'webjars!jquery.js',
-        'webjars!bootstrap.min.js',
-        'webjars!angular-route.js',
-        'webjars!angular-animate.js',
-        'webjars!highcharts.js',
-        'webjars!core.js',
-        'webjars!md5.js',
-        'event-source'
+        './service/EventSourceService'
     ],
-	function (angular, MainController, SymbolsController, PortfolioController, SignUpController) {
-		angular.module('app',
-	            [
-	                'ngResource',
-                    'ngRoute',
-                    'ngAnimate',
-	                'DemoService',
-                    'ChartingService',
-                    'SymbolsService',
-                    'FollowSymbolService',
-                    'QuotesService',
-                    'LoginService',
-                    'SignUpService',
-                    'EventSourceService'
-	            ]
-		).config(['$routeProvider', function($routeProvider) {
-			$routeProvider.when('/', { templateUrl: 'assets/javascripts/app/view/main.html', controller: MainController, resolve: MainController.resolve })
-                          .when('/?mail=:mail', { templateUrl: 'assets/javascripts/app/view/main.html', controller: MainController, resolve: MainController.resolve })
-                          .when('/symbols', { templateUrl: 'assets/javascripts/app/view/symbols.html', controller: SymbolsController })
-                          .when('/portfolio', { templateUrl: 'assets/javascripts/app/view/portfolio.html', controller: PortfolioController, resolve: PortfolioController.resolve })
-                          .when('/signup', { templateUrl: 'assets/javascripts/app/view/signup.html', controller: SignUpController })
-                          .when('/signup/:mail', { templateUrl: 'assets/javascripts/app/view/signup.html', controller: SignUpController })
-						  .otherwise({ redirectTo: '/' });
+	function (angular) {
+
+        angular.module('app',
+            [
+                'ngResource',
+                'ngRoute',
+                'ngAnimate',
+                'app.controllers',
+                'DemoService',
+                'ChartingService',
+                'SymbolsService',
+                'FollowSymbolService',
+                'QuotesService',
+                'LoginService',
+                'SignUpService',
+                'EventSourceService'
+            ]
+        ).config(['$routeProvider', function($routeProvider) {
+			$routeProvider.when('/', {
+                templateUrl: 'assets/javascripts/app/view/main.html',
+                controller: 'MainController',
+                resolve: {
+                    demo: function(DemoService, $q, $rootScope) {
+                        var deferred = $q.defer();
+
+                        DemoService.get(function(demo) {
+                            deferred.resolve(demo);
+                        }, function(error) {
+                            console.log(error);
+
+                            $rootScope.setMessage({ type: 'error', text: 'An error occured. Please try again later' });
+
+                            deferred.resolve({});
+                        });
+
+                        return deferred.promise;
+                    }
+                }
+            }).when('/?mail=:mail', {
+                templateUrl: 'assets/javascripts/app/view/main.html',
+                controller: 'MainController',
+                resolve: {
+                    demo: function(DemoService, $q, $rootScope) {
+                        var deferred = $q.defer();
+
+                        DemoService.get(function(demo) {
+                            deferred.resolve(demo);
+                        }, function(error) {
+                            console.log(error);
+
+                            $rootScope.setMessage({ type: 'error', text: 'An error occured. Please try again later' });
+
+                            deferred.resolve({});
+                        });
+
+                        return deferred.promise;
+                    }
+                }
+            }).when('/symbols', {
+                templateUrl: 'assets/javascripts/app/view/symbols.html',
+                controller: 'SymbolsController'
+            }).when('/portfolio', {
+                templateUrl: 'assets/javascripts/app/view/portfolio.html',
+                controller: 'PortfolioController',
+                resolve: {
+                    quotes: function(QuotesService, $q, $rootScope) {
+                        if (!$rootScope.user || !$rootScope.user.followedStocks.length) return null;
+
+                        var deferred = $q.defer();
+
+                        var symbolList = $rootScope.user.followedStocks.join(",");
+                        QuotesService.query(
+                            { symbols: symbolList },
+                            function(quotes) {
+                                deferred.resolve(quotes);
+                            }, function(error) {
+                                console.log(error);
+
+                                $rootScope.setMessage({ type: 'error', text: 'An error occured. Please try again later' });
+
+                                deferred.resolve({});
+                            }
+                        );
+
+                        return deferred.promise;
+                    }
+                }
+            }).when('/signup', {
+                templateUrl: 'assets/javascripts/app/view/signup.html',
+                controller: 'SignUpController'
+            }).when('/signup/:mail', {
+                templateUrl: 'assets/javascripts/app/view/signup.html',
+                controller: 'SignUpController'
+            }).otherwise({ redirectTo: '/' });
 		}]).run(function($rootScope, $location, LoginService) {
                 installFunctions($rootScope, $location, LoginService);
 
