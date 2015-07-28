@@ -1,27 +1,30 @@
 package controllers
 
-import play.api.mvc._
-import play.modules.reactivemongo.MongoController
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-import play.api.{Routes, Logger}
-import play.api.Play.current
-import play.api.libs.json.Json
-import play.api.cache.Cache
 import java.util.UUID
-import utils.Constants._
-import play.modules.reactivemongo.json.collection.JSONCollection
-import scala.Some
-import models.User
-import utils.md5
-import reactivemongo.core.errors.DatabaseException
-import akka.util.Timeout
+
 import actors.QuoteManagingActor
-import play.api.data._
-import play.api.data.Forms._
-import play.api.libs.openid.OpenID
+import akka.util.Timeout
+import models.User
 import models.User._
+import play.api.Play.current
+import play.api.cache.Cache
+import play.api.data.Forms._
+import play.api.data._
+import play.api.libs.json.Json
+import play.api.libs.openid.OpenID
+import play.api.mvc._
+import play.api.{Logger, Routes}
+import play.modules.reactivemongo.MongoController
+import play.modules.reactivemongo.json.collection.JSONCollection
+import play.modules.reactivemongo.json._
+import play.modules.reactivemongo.json.collection._
+import reactivemongo.core.errors.DatabaseException
+import utils.Constants._
+import utils.md5
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.concurrent.duration._
 
 object Application extends Controller with MongoController {
 

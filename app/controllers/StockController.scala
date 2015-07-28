@@ -19,7 +19,8 @@ import models.Quote
 import models.ChartRequest
 import play.api.libs.iteratee.Concurrent
 import play.api.libs.EventSource
-import play.modules.reactivemongo.json.collection.JSONCollection
+import play.modules.reactivemongo.json._
+import play.modules.reactivemongo.json.collection._
 import play.api.Play.current
 import scala.concurrent.ExecutionContext.Implicits.global
 import StockAPI._
